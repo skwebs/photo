@@ -32,7 +32,6 @@
 	body {
 		height: 100vh;
 		padding: 10px;
-		background: #979790;
 	}
 	
 	.d-flexx {
@@ -62,26 +61,44 @@
 	</style>
 </head>
 
-<body>
-	<div class="container pt-4" >
-		<input class="form-control"  id="input" type="file" accept="image/*">
-		<div class="d-flexx mt-4">
-			<div class="items"> <img src="./img.jpg" id="orgImg"> </div>
-			<div class="items ml-2"> <img id="stage1Image" alt="Stage 1 Image"> </div>
+<body class="bg-light" >
+	<div class="container my-4" >
+		<h1 class="border py-2 text-center text-primary rounded my-4" >Image Sizing</h1>
+		<div class="form-group bg-white p-3">
+			<label for="input">Select image</label>
+			<input class="form-control-file"  id="input" type="file" accept="image/*">
 		</div>
-		<br>
-		<p id="fileInfo"></p> 
-		<img id="A4Image" alt="Stage 2 Image">
-		<br>
-		<br>
+		
+		<div class="d-flexx my-4">
+			<div class="items"> 
+				<p class="text-center" >Uploaded Image</p>
+				<img src="./assets/img/no-image-selected.jpg" id="orgImg"> 
+			</div>
+			<div class="items ml-2"> 
+				<p class="pl-0 text-nowrap text-center" >Border Added Image</p>
+				<img id="image1" class="d-none " alt="Stage 1 Image"> 
+			</div>
+		</div>
+		
+		<label class="my-1 mr-2 mt-4" for="numberOfImageRow">Number of image row</label>
+		<select class="custom-select my-1 mr-sm-2" id="numberOfImageRow">
+		<option value="1">One Row</option>
+		<option selected="selected" value="2">Two Rows</option>
+		<option value="3">Three Rows</option>
+		<option value="4">Four Rows</option>
+		</select>
+		
+		<p id="fileInfo" class="sr-only" ></p> 
+		<p class="mt-4" >Arranged Image</p>
+		<img id="A4Image" class="d-none" alt="Stage 2 Image">
+		
+		
 		<canvas id="canvas1" class="border sr-only"></canvas>
 		<canvas id="A4Canvas" class="sr-only"></canvas>
 		
 	</div>
 	<script type="text/javascript">
 	window.addEventListener('DOMContentLoaded', function() {
-		
-		
 		
 		
 		
@@ -147,14 +164,19 @@
 					return 'Unknown filetype'
 			}
 		};
-
+		
+		
+		
+		var numOfRow = document.getElementById("numberOfImageRow");
+		numOfRow.addEventListener("change",()=>{
+			loadCanvas();
+		})
 		function loadCanvas() {
+			var numberOfImageRow = numOfRow.value;
+			
 			//	var orgImg = document.getElementById("orgImg");
 			var canvas1 = document.getElementById("canvas1");
-			var stage1Image = document.getElementById("stage1Image");
-			const jpg = "image/jpeg";
-			const png = "image/png";
-			const mime = jpg;
+			var image1 = document.getElementById("image1");
 			var imageSizeUnit = 3;
 			var imageRatio = 20 / 23;
 			var imageWidth = 200 * imageSizeUnit;
@@ -170,10 +192,14 @@
 			// copying image
 			ctx1.drawImage(orgImg, imageBorder, imageBorder, imageWidth - imageBorder * 2, imageHeight - imageBorder * 2);
 			// add image url 
-			stage1Image.src = canvas1.toDataURL(mime);
+			image1.src = canvas1.toDataURL(mimeType);
 			// step 2 (arrange image for printing)
 			var A4Canvas = document.getElementById("A4Canvas");
 			var A4Image = document.getElementById("A4Image");
+			
+			image1.classList.remove("d-none");
+			A4Image.classList.remove("d-none");
+			
 			var ctx2 = A4Canvas.getContext("2d");
 			// numbers of image in a row
 			var numOfRowImg = 6;
@@ -186,38 +212,69 @@
 			var canvasHeight = canvasWidth * 297 / 210; // size ratio of A4 paper size
 			A4Canvas.width = canvasWidth;
 			A4Canvas.height = canvasHeight;
+			
 			// because both canvas not perform once so add this in timeout method
 			setTimeout(() => {
 				// fill bg white
 				ctx2.fillStyle = '#fff';
 				ctx2.fillRect(0, 0, A4Canvas.width, A4Canvas.height);
-				for(let i = 0; i < numOfRowImg; i++) {
-					// copy image on canvas
-					/*/ row 1
-					//ctx2.drawImage(stage1Image, imageMarginX, imageMarginY, imageWidth, imageHeight);
-					ctx2.drawImage(stage1Image, imageMarginX, (imageHeight * 0 + imageMargin * 1), imageWidth, imageHeight);
-					// row 2
-					ctx2.drawImage(stage1Image, imageMarginX, (imageHeight * 1 + imageMargin * 2), imageWidth, imageHeight);
-					// row 3
-					ctx2.drawImage(stage1Image, imageMarginX, (imageHeight * 2 + imageMargin * 3 ), imageWidth, imageHeight);
-					// row 4
-					ctx2.drawImage(stage1Image, imageMarginX, (imageHeight * 3 + imageMargin * 4), imageWidth, imageHeight);
-					*/
-					
-					// row 1
-					ctx2.drawImage(stage1Image, imageMarginX, (imageHeight + imageMargin) * 0 + imageMargin, imageWidth, imageHeight);
-					// row 2
-					ctx2.drawImage(stage1Image, imageMarginX, (imageHeight + imageMargin) * 1 + imageMargin, imageWidth, imageHeight);
-					// row 3
-					ctx2.drawImage(stage1Image, imageMarginX, (imageHeight + imageMargin) * 2 + imageMargin, imageWidth, imageHeight);
-					// row 4
-					ctx2.drawImage(stage1Image, imageMarginX, (imageHeight + imageMargin) * 3 + imageMargin, imageWidth, imageHeight);
-					
-					// every loop added image in per row distance
-					imageMarginX += imageWidth + imageMargin;
+				if(numberOfImageRow == 1 ){
+					for(let i = 0; i < numOfRowImg; i++) {
+						// copy image on canvas
+						// row 1
+						ctx2.drawImage(image1, imageMarginX, (imageHeight + imageMargin) * 0 + imageMargin, imageWidth, imageHeight);
+						
+						// every loop added image in per row distance
+						imageMarginX += imageWidth + imageMargin;
+					}
+				}
+
+				if(numberOfImageRow == 2 ){
+					for(let i = 0; i < numOfRowImg; i++) {
+						// copy image on canvas
+						// row 1
+						ctx2.drawImage(image1, imageMarginX, (imageHeight + imageMargin) * 0 + imageMargin, imageWidth, imageHeight);
+						// row 2
+						ctx2.drawImage(image1, imageMarginX, (imageHeight + imageMargin) * 1 + imageMargin, imageWidth, imageHeight);
+						
+						// every loop added image in per row distance
+						imageMarginX += imageWidth + imageMargin;
+					}
+				}
+				if(numberOfImageRow == 3 ){
+					for(let i = 0; i < numOfRowImg; i++) {
+						// copy image on canvas
+						// row 1
+						ctx2.drawImage(image1, imageMarginX, (imageHeight + imageMargin) * 0 + imageMargin, imageWidth, imageHeight);
+						// row 2
+						ctx2.drawImage(image1, imageMarginX, (imageHeight + imageMargin) * 1 + imageMargin, imageWidth, imageHeight);
+						// row 3
+						ctx2.drawImage(image1, imageMarginX, (imageHeight + imageMargin) * 2 + imageMargin, imageWidth, imageHeight);
+						
+						// every loop added image in per row distance
+						imageMarginX += imageWidth + imageMargin;
+					}
+				}
+				
+
+				if(numberOfImageRow == 4 ){
+					for(let i = 0; i < numOfRowImg; i++) {
+						// copy image on canvas
+						// row 1
+						ctx2.drawImage(image1, imageMarginX, (imageHeight + imageMargin) * 0 + imageMargin, imageWidth, imageHeight);
+						// row 2
+						ctx2.drawImage(image1, imageMarginX, (imageHeight + imageMargin) * 1 + imageMargin, imageWidth, imageHeight);
+						// row 3
+						ctx2.drawImage(image1, imageMarginX, (imageHeight + imageMargin) * 2 + imageMargin, imageWidth, imageHeight);
+						// row 4
+						ctx2.drawImage(image1, imageMarginX, (imageHeight + imageMargin) * 3 + imageMargin, imageWidth, imageHeight);
+						
+						// every loop added image in per row distance
+						imageMarginX += imageWidth + imageMargin;
+					}
 				}
 				// add arranged canvas to image
-				A4Image.src = A4Canvas.toDataURL(mime);
+				A4Image.src = A4Canvas.toDataURL(mimeType);
 			}, 10)
 		}
 	})
