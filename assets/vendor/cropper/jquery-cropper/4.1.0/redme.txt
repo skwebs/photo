@@ -1,0 +1,1 @@
+This is complete jQuery cropper no need cropperjs in this file
