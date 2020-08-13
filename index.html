@@ -35,19 +35,20 @@
 		background: #979790;
 	}
 	
-	.d-flex {
+	.d-flexx {
 		display: flex;
 		justify-content: flex-start;
 		overflow-x: auto;
 	}
 	
-	.items {
+	items {
 		width: 100px;
 		border: thin solid #eee;
 	}
 	
 	.items img {
-		width: 100% !important;
+		width: 200px !important;
+		height:230px;
 	}
 	
 	.border {
@@ -55,38 +56,48 @@
 	}
 	
 	#A4Image {
-		width: 100vw;
+		width: 100%;
 		border: thin solid #eee;
 	}
 	</style>
 </head>
 
 <body>
-	<input id="input" type="file" accept="image/*">
-	<br>
-	<br>
-	<div class="d-flex">
-		<div class="items"> <img src="./img.jpg" id="orgImg"> </div>
-		<div class="items ml"> <img id="stage1Image" alt="Stage 1 Image"> </div>
+	<div class="container pt-4" >
+		<input class="form-control"  id="input" type="file" accept="image/*">
+		<div class="d-flexx mt-4">
+			<div class="items"> <img src="./img.jpg" id="orgImg"> </div>
+			<div class="items ml-2"> <img id="stage1Image" alt="Stage 1 Image"> </div>
+		</div>
+		<br>
+		<p id="fileInfo"></p> 
+		<img id="A4Image" alt="Stage 2 Image">
+		<br>
+		<br>
+		<canvas id="canvas1" class="border sr-only"></canvas>
+		<canvas id="A4Canvas" class="sr-only"></canvas>
+		
 	</div>
-	<br>
-	<p id="fileInfo"></p> <img id="A4Image" alt="Stage 2 Image">
-	<br>
-	<br>
-	<canvas id="canvas1" class="border sr-only"></canvas>
-	<canvas id="A4Canvas" class="sr-only"></canvas>
 	<script type="text/javascript">
 	window.addEventListener('DOMContentLoaded', function() {
+		
+		
+		
+		
+		
+		
 		//	 IMAGE LOAD SECTION ================================
 		var imageInput = document.querySelector("#input");
 		var fileInfo = document.querySelector("#fileInfo");
 		var orgImg = document.getElementById("orgImg");
+		
+		
 		imageInput.addEventListener("change", (event) => {
 			console.time('FileOpen');
 			var files = event.target.files;
 			if(files && files.length > 0) {
 				var file = files[0];
-				console.log(file.name)
+				console.log(file)
 					// show file details
 				fileInfo.innerHTML = "File: " + file.name;
 				//fileSize.html("Size: " + ((file.size / 1024).toFixed(2)) + "KB;&nbsp&nbsp");
@@ -144,20 +155,20 @@
 			const jpg = "image/jpeg";
 			const png = "image/png";
 			const mime = jpg;
-			var imageSizeUnit = 5;
+			var imageSizeUnit = 3;
 			var imageRatio = 20 / 23;
-			var image1Width = 200 * imageSizeUnit;
-			var image1Height = image1Width / imageRatio;
-			var image1Border = image1Width / 100;
-			canvas1.width = image1Width;
-			canvas1.height = image1Height;
+			var imageWidth = 200 * imageSizeUnit;
+			var imageHeight = imageWidth / imageRatio;
+			var imageBorder = imageWidth / 100;
+			canvas1.width = imageWidth;
+			canvas1.height = imageHeight;
 			// step 1 (add border in image)
 			var ctx1 = canvas1.getContext("2d");
 			// this is for image border color
 			ctx1.fillStyle = '#000';
-			ctx1.fillRect(0, 0, image1Width, image1Height);
+			ctx1.fillRect(0, 0, imageWidth, imageHeight);
 			// copying image
-			ctx1.drawImage(orgImg, image1Border, image1Border, image1Width - image1Border * 2, image1Height - image1Border * 2);
+			ctx1.drawImage(orgImg, imageBorder, imageBorder, imageWidth - imageBorder * 2, imageHeight - imageBorder * 2);
 			// add image url 
 			stage1Image.src = canvas1.toDataURL(mime);
 			// step 2 (arrange image for printing)
@@ -166,15 +177,12 @@
 			var ctx2 = A4Canvas.getContext("2d");
 			// numbers of image in a row
 			var numOfRowImg = 6;
-			// set image width & height
-			var imageWidth = image1Width;
-			var imageHeight = image1Height;
 			// ser gap between images
 			var imageMargin = imageWidth / 20;
-			var imageMarginX = 0;
-			var imageMarginY = 0;
+			var imageMarginX = imageMargin;
+			var imageMarginY = imageMargin;
 			// whole image size will be ready for download
-			var canvasWidth = numOfRowImg * (imageWidth + imageMargin);
+			var canvasWidth = numOfRowImg * (imageWidth + imageMargin)+imageMargin;
 			var canvasHeight = canvasWidth * 297 / 210; // size ratio of A4 paper size
 			A4Canvas.width = canvasWidth;
 			A4Canvas.height = canvasHeight;
@@ -185,14 +193,26 @@
 				ctx2.fillRect(0, 0, A4Canvas.width, A4Canvas.height);
 				for(let i = 0; i < numOfRowImg; i++) {
 					// copy image on canvas
-					// row 1
-					ctx2.drawImage(stage1Image, imageMarginX, imageMarginY, imageWidth, imageHeight);
+					/*/ row 1
+					//ctx2.drawImage(stage1Image, imageMarginX, imageMarginY, imageWidth, imageHeight);
+					ctx2.drawImage(stage1Image, imageMarginX, (imageHeight * 0 + imageMargin * 1), imageWidth, imageHeight);
 					// row 2
-					ctx2.drawImage(stage1Image, imageMarginX, (imageHeight + imageMargin), imageWidth, imageHeight);
+					ctx2.drawImage(stage1Image, imageMarginX, (imageHeight * 1 + imageMargin * 2), imageWidth, imageHeight);
 					// row 3
-					//ctx2.drawImage(stage1Image, imageMarginX, (imageHeight+imageMargin)*2, imageWidth, imageHeight);
+					ctx2.drawImage(stage1Image, imageMarginX, (imageHeight * 2 + imageMargin * 3 ), imageWidth, imageHeight);
 					// row 4
-					//ctx2.drawImage(stage1Image, imageMarginX, (imageHeight+imageMargin)*3, imageWidth, imageHeight);
+					ctx2.drawImage(stage1Image, imageMarginX, (imageHeight * 3 + imageMargin * 4), imageWidth, imageHeight);
+					*/
+					
+					// row 1
+					ctx2.drawImage(stage1Image, imageMarginX, (imageHeight + imageMargin) * 0 + imageMargin, imageWidth, imageHeight);
+					// row 2
+					ctx2.drawImage(stage1Image, imageMarginX, (imageHeight + imageMargin) * 1 + imageMargin, imageWidth, imageHeight);
+					// row 3
+					ctx2.drawImage(stage1Image, imageMarginX, (imageHeight + imageMargin) * 2 + imageMargin, imageWidth, imageHeight);
+					// row 4
+					ctx2.drawImage(stage1Image, imageMarginX, (imageHeight + imageMargin) * 3 + imageMargin, imageWidth, imageHeight);
+					
 					// every loop added image in per row distance
 					imageMarginX += imageWidth + imageMargin;
 				}
