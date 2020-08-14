@@ -28,35 +28,12 @@
 		padding: 0;
 		box-sizing: border-box;
 	}
-	
-	body {
-		height: 100vh;
-		padding: 10px;
-	}
-	
-	.d-flexx {
-		display: flex;
-		justify-content: flex-start;
-		overflow-x: auto;
-	}
-	
-	items {
-		width: 100px;
-		border: thin solid #eee;
-	}
-	
 	.items img {
 		width: 200px !important;
-		height:230px;
-	}
-	
-	.border {
-		border: thin solid #eee;
 	}
 	
 	#A4Image {
 		width: 100%;
-		border: thin solid #eee;
 	}
 	</style>
 </head>
@@ -65,14 +42,14 @@
 	<div class="container my-4" >
 		<h1 class="border py-2 text-center text-primary rounded my-4" >Image Sizing</h1>
 		<div class="form-group bg-white p-3">
-			<label for="input">Select image</label>
-			<input class="form-control-file"  id="input" type="file" accept="image/*">
+			<label for="selectImage">Select image</label>
+			<input class="form-control-file"  id="selectImage" type="file" accept="image/*">
 		</div>
 		
-		<div class="d-flexx my-4">
+		<div class="d-flex justify-content-start my-4">
 			<div class="items"> 
 				<p class="text-center" >Uploaded Image</p>
-				<img src="./assets/img/no-image-selected.jpg" id="orgImg"> 
+				<img src="./assets/img/no-image-selected.jpg" id="uploadedImage"> 
 			</div>
 			<div class="items ml-2"> 
 				<p class="pl-0 text-nowrap text-center" >Border Added Image</p>
@@ -82,15 +59,27 @@
 		
 		<label class="my-1 mr-2 mt-4" for="numberOfImageRow">Number of image row</label>
 		<select class="custom-select my-1 mr-sm-2" id="numberOfImageRow">
-		<option value="1">One Row</option>
-		<option selected="selected" value="2">Two Rows</option>
-		<option value="3">Three Rows</option>
-		<option value="4">Four Rows</option>
+			<option value="1">One Row</option>
+			<option selected="selected" value="2">Two Rows</option>
+			<option value="3">Three Rows</option>
+			<option value="4">Four Rows</option>
 		</select>
+		
+		<label class="my-1 mr-2 mt-4" for="numberOfImageRow">Number of image row</label>
+		<select class="custom-select my-1 mr-sm-2" id="numberOfImageColumn">
+			<option value="1">One Column</option>
+			<option value="2">Two Columns</option>
+			<option value="3">Three Columns</option>
+			<option value="4">Four Columns</option>
+			<option value="5">Give Column</option>
+			<option selected="selected" value="6">Six Columns</option>
+			<option value="7">Seven Columns</option>
+			<option value="8">Eight Columns</option>
+			</select>
 		
 		<p id="fileInfo" class="sr-only" ></p> 
 		<p class="mt-4" >Arranged Image</p>
-		<img id="A4Image" class="d-none" alt="Stage 2 Image">
+		<img id="A4Image" class="d-none border" alt="Stage 2 Image">
 		
 	</div>
 	<script type="text/javascript">
@@ -100,12 +89,12 @@
 		
 		
 		//	 IMAGE LOAD SECTION ================================
-		var imageInput = document.querySelector("#input");
+		var selectImage = document.querySelector("#selectImage");
 		var fileInfo = document.querySelector("#fileInfo");
-		var orgImg = document.getElementById("orgImg");
+		var uploadedImage = document.getElementById("uploadedImage");
+		var originaImageRatio;
 		
-		
-		imageInput.addEventListener("change", (event) => {
+		selectImage.addEventListener("change", (event) => {
 			console.time('FileOpen');
 			var files = event.target.files;
 			if(files && files.length > 0) {
@@ -114,15 +103,26 @@
 					// show file details
 				fileInfo.innerHTML = "File: " + file.name;
 				//fileSize.html("Size: " + ((file.size / 1024).toFixed(2)) + "KB;&nbsp&nbsp");
+				
+				// file reader for data url section
 				var fileReaderForDataURL = new FileReader();
 				fileReaderForDataURL.onloadend = function(e) {
-					orgImg.src = e.target.result;
+					uploadedImage.src = e.target.result;
+					// find image dimensions 
+					var imageForDimenstion = new Image();
+					imageForDimenstion.src = e.target.result;
+					imageForDimenstion.onload = function () {
+						let height = this.naturalHeight || this.height;
+						let width = this.naturalWidth || this.width;
+						originaImageRatio = width / height;
+						loadCanvas();
+					};
 					// console image url data
 					console.log(e.target.result)
-						//loadCanvas();
-						//setTimeout(loadCanvas(),100)
 				};
 				fileReaderForDataURL.readAsDataURL(file);
+				
+				// file reader for array buffer section
 				var fileReaderForArrayBuffer = new FileReader();
 				fileReaderForArrayBuffer.onloadend = function(evt) {
 					if(evt.target.readyState === FileReader.DONE) {
@@ -134,13 +134,14 @@
 						var hex = bytes.join('').toUpperCase();
 						mimeType = checkMimeType(hex);
 					}
-					console.timeEnd('FileOpen')
-					loadCanvas()
+					console.timeEnd('FileOpen');
+					//loadCanvas();
 				};
 				var BLOB = file.slice(0, 4);
 				fileReaderForArrayBuffer.readAsArrayBuffer(BLOB)
 			}
-		}); // load image for crop ended here.
+		}); 
+		
 		//	IMAGE MIME SECTION ==================================
 		var checkMimeType = (signature) => {
 			switch(signature) {
@@ -160,23 +161,45 @@
 					return 'Unknown filetype'
 			}
 		};
+		function imageRatio(x, y) {
+			let gcd = hcf(x, y);
+			let r1 = x / gcd;
+			let r2 = y / gcd;
+			let ratioString = r1 + "/" + r2;
+			return ratioString;
+		}
 		
+		function hcf(x, y) {
+			x = Math.abs(x);
+			y = Math.abs(y);
+			while(y) {
+				let t = y;
+				y = x % y;
+				x = t;
+			}
+			return x;
+		}
 		
 		
 		var numOfRow = document.getElementById("numberOfImageRow");
 		numOfRow.addEventListener("change",()=>{
 			loadCanvas();
 		})
+		
+		var numOfColumn = document.getElementById("numberOfImageColumn");
+			numOfColumn.addEventListener("change",()=>{
+			loadCanvas();
+		})
+		
 		function loadCanvas() {
 			var numberOfImageRow = numOfRow.value;
-			
-			//	var orgImg = document.getElementById("orgImg");
+			var numberOfImageColumn = numOfColumn.value;
 			var canvas1 = document.createElement("canvas"); //document.getElementById("canvas1");
 			var image1 = document.getElementById("image1");
 			var imageSizeUnit = 3;
-			var imageRatio = 20 / 23;
+			//var imageRatio = 20 / 23;
 			var imageWidth = 200 * imageSizeUnit;
-			var imageHeight = imageWidth / imageRatio;
+			var imageHeight = imageWidth / originaImageRatio;
 			var imageBorder = imageWidth / 100;
 			canvas1.width = imageWidth;
 			canvas1.height = imageHeight;
@@ -186,25 +209,24 @@
 			ctx1.fillStyle = '#000';
 			ctx1.fillRect(0, 0, imageWidth, imageHeight);
 			// copying image
-			ctx1.drawImage(orgImg, imageBorder, imageBorder, imageWidth - imageBorder * 2, imageHeight - imageBorder * 2);
+			ctx1.drawImage(uploadedImage, imageBorder, imageBorder, imageWidth - imageBorder * 2, imageHeight - imageBorder * 2);
 			// add image url 
 			image1.src = canvas1.toDataURL(mimeType);
+			
 			// step 2 (arrange image for printing)
 			var A4Canvas = document.createElement("canvas") ; //document.getElementById("A4Canvas");
 			var A4Image = document.getElementById("A4Image");
-			
+			// show images on loaf
 			image1.classList.remove("d-none");
 			A4Image.classList.remove("d-none");
 			
 			var ctx2 = A4Canvas.getContext("2d");
-			// numbers of image in a row
-			var numOfRowImg = 6;
-			// ser gap between images
+			// set gap between images
 			var imageMargin = imageWidth / 20;
 			var imageMarginX = imageMargin;
 			var imageMarginY = imageMargin;
 			// whole image size will be ready for download
-			var canvasWidth = numOfRowImg * (imageWidth + imageMargin)+imageMargin;
+			var canvasWidth = numberOfImageColumn * (imageWidth + imageMargin)+imageMargin;
 			var canvasHeight = canvasWidth * 297 / 210; // size ratio of A4 paper size
 			A4Canvas.width = canvasWidth;
 			A4Canvas.height = canvasHeight;
@@ -215,46 +237,31 @@
 				ctx2.fillStyle = '#fff';
 				ctx2.fillRect(0, 0, A4Canvas.width, A4Canvas.height);
 				if(numberOfImageRow == 1 ){
-					for(let i = 0; i < numOfRowImg; i++) {
-						// copy image on canvas
-						// row 1
+					for(let i = 0; i < numberOfImageColumn; i++) {
 						ctx2.drawImage(image1, imageMarginX, (imageHeight + imageMargin) * 0 + imageMargin, imageWidth, imageHeight);
-						
-						// every loop added image in per row distance
 						imageMarginX += imageWidth + imageMargin;
 					}
 				}
 
 				if(numberOfImageRow == 2 ){
-					for(let i = 0; i < numOfRowImg; i++) {
-						// copy image on canvas
-						// row 1
+					for(let i = 0; i < numberOfImageColumn; i++) {
 						ctx2.drawImage(image1, imageMarginX, (imageHeight + imageMargin) * 0 + imageMargin, imageWidth, imageHeight);
-						// row 2
 						ctx2.drawImage(image1, imageMarginX, (imageHeight + imageMargin) * 1 + imageMargin, imageWidth, imageHeight);
-						
-						// every loop added image in per row distance
 						imageMarginX += imageWidth + imageMargin;
 					}
 				}
 				if(numberOfImageRow == 3 ){
-					for(let i = 0; i < numOfRowImg; i++) {
-						// copy image on canvas
-						// row 1
+					for(let i = 0; i < numberOfImageColumn; i++) {
 						ctx2.drawImage(image1, imageMarginX, (imageHeight + imageMargin) * 0 + imageMargin, imageWidth, imageHeight);
-						// row 2
 						ctx2.drawImage(image1, imageMarginX, (imageHeight + imageMargin) * 1 + imageMargin, imageWidth, imageHeight);
-						// row 3
 						ctx2.drawImage(image1, imageMarginX, (imageHeight + imageMargin) * 2 + imageMargin, imageWidth, imageHeight);
-						
-						// every loop added image in per row distance
 						imageMarginX += imageWidth + imageMargin;
 					}
 				}
 				
 
 				if(numberOfImageRow == 4 ){
-					for(let i = 0; i < numOfRowImg; i++) {
+					for(let i = 0; i < numberOfImageColumn; i++) {
 						// copy image on canvas
 						// row 1
 						ctx2.drawImage(image1, imageMarginX, (imageHeight + imageMargin) * 0 + imageMargin, imageWidth, imageHeight);
@@ -271,7 +278,7 @@
 				}
 				// add arranged canvas to image
 				A4Image.src = A4Canvas.toDataURL(mimeType);
-			}, 10)
+			}, 50)
 		}
 	})
 	</script>
