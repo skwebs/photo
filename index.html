@@ -92,10 +92,6 @@
 		<p class="mt-4" >Arranged Image</p>
 		<img id="A4Image" class="d-none" alt="Stage 2 Image">
 		
-		
-		<canvas id="canvas1" class="border sr-only"></canvas>
-		<canvas id="A4Canvas" class="sr-only"></canvas>
-		
 	</div>
 	<script type="text/javascript">
 	window.addEventListener('DOMContentLoaded', function() {
@@ -175,7 +171,7 @@
 			var numberOfImageRow = numOfRow.value;
 			
 			//	var orgImg = document.getElementById("orgImg");
-			var canvas1 = document.getElementById("canvas1");
+			var canvas1 = document.createElement("canvas"); //document.getElementById("canvas1");
 			var image1 = document.getElementById("image1");
 			var imageSizeUnit = 3;
 			var imageRatio = 20 / 23;
@@ -194,7 +190,7 @@
 			// add image url 
 			image1.src = canvas1.toDataURL(mimeType);
 			// step 2 (arrange image for printing)
-			var A4Canvas = document.getElementById("A4Canvas");
+			var A4Canvas = document.createElement("canvas") ; //document.getElementById("A4Canvas");
 			var A4Image = document.getElementById("A4Image");
 			
 			image1.classList.remove("d-none");
