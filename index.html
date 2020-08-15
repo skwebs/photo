@@ -32,21 +32,18 @@
 		width: 200px !important;
 	}
 	
-	#A4Image {
-		width: 100%;
-	}
 	</style>
 </head>
 
 <body class="bg-light" >
-	<div class="container my-4" >
-		<h1 class="border py-2 text-center text-primary rounded my-4" >Image Sizing</h1>
+	<div class="container my-4 pb-5" style="overflow-x:hidden;" >
+		<h1 class="border border-primary py-2 text-center text-primary rounded my-4" >Image Sizing</h1>
 		<div class="form-group bg-white p-3">
 			<label for="selectImage">Select image</label>
 			<input class="form-control-file"  id="selectImage" type="file" accept="image/*">
 		</div>
 		
-		<div class="d-flex justify-content-start my-4">
+		<div class="d-flex justify-content-start my-4" style="overflow-x:auto;" >
 			<div class="items"> 
 				<p class="text-center" >Uploaded Image</p>
 				<img src="./assets/img/no-image-selected.jpg" id="uploadedImage"> 
@@ -85,14 +82,14 @@
 			</select>
 		
 		<p id="fileInfo" class="sr-only" ></p> 
-		<p class="mt-4" >Arranged Image</p>
-		<img id="A4Image" class="d-none border" alt="Stage 2 Image">
-		
+		<div class="mt-4" id="download-link" ></div>
 	</div>
+	<footer class="bg-dark fixed-bottom py-3 text-muted text-center" >
+		<p class="m-0" >&copy <script> document.write((new Date).getFullYear());</script> Developed by <a class="text-italic text-muted h6" href="https://skwebs.github.io/" >SKWebs</a></p>
+	</footer>
 	<script type="text/javascript">
 //	"use strict";
 	window.addEventListener('DOMContentLoaded', function() {
-		
 		
 		
 		
@@ -224,10 +221,8 @@
 			
 			// step 2 (arrange image for printing)
 			var A4Canvas = document.createElement("canvas") ; //document.getElementById("A4Canvas");
-			var A4Image = document.getElementById("A4Image");
 			// show images on loaf
 			image1.classList.remove("d-none");
-			A4Image.classList.remove("d-none");
 			
 			var ctx2 = A4Canvas.getContext("2d");
 			// set gap between images
@@ -257,11 +252,13 @@
 				}
 				
 				// add arranged canvas to image
-				A4Image.src = A4Canvas.toDataURL(mimeType);
+				var finalImageURL = A4Canvas.toDataURL(mimeType);
+				document.getElementById("download-link").innerHTML = '<a href="'+finalImageURL+'" download ><center>Download image.</center> <img data-tooltip="tooltip" width="100%" title="Touch or, click on image to download." src="'+finalImageURL+'" class="border" alt=" Final image for print"></a>';
 			}, 50)
 		}
 	})
 	</script>
 </body>
+
 
 </html>
