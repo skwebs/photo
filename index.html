@@ -52,29 +52,51 @@
 		flex: 0 0 auto !important;
 	}
 	
-	.items img {
+	.items > * {
 		width: 200px !important;
 	}
 	
 	.bg-black {
 		background: rgba(0, 0, 0, .4);
 	}
+	.btn.active.focus,
+	.btn.active:focus,
+	.btn.focus,
+	.btn.focus:active,
+	.btn:active:focus,
+	.btn:focus {
+	outline: 0 !important;
+	outline-offset: 0  !important;
+	background-image: none  !important;
+	-webkit-box-shadow: none !important;
+	box-shadow: none  !important;
+	}
+	#outputCanvas{width:100%;}
 	</style>
 </head>
+<!-- 
 
+Author : Satish Kumar Sharma
+Contact : skwebserv@gmail.com
+Web : https://skwebs.github.io
+
+-->
 <body class="bg-dark">
 	<main>
 		<div class="container my-4" style="overflow-x:hidden;">
 			<h1 class="border py-2 text-center text-primary rounded my-4">Image Sizing</h1>
+			
 			<div class="card px-3 py-2 my-3 bg-dark text-light border-light">
 				<div class="form-group pt-2">
 					<label for="selectImage">Select image</label>
 					<input class="form-control-file" id="selectImage" type="file" accept="image/*"> 
 				</div>
 			</div>
-			<div class="collapse" id="mainCollapse">
-				<button class="btn btn-info" type="button" data-toggle="collapse" data-target="#imagePreview" aria-expanded="false" aria-controls="collapseExample">Image Preview</button>
-				<br>
+			
+			
+			<div class="collapse" id="mainCollapseContent">
+				<button id="previewBtn" class="btn btn-info" type="button" data-toggle="collapse" data-target="#imagePreview" aria-expanded="false" aria-controls="collapseExample">Open Image Preview</button>
+				<button class="btn btn-primary" id="settingBtn" type="button" data-toggle="collapse" data-target="#imageSettings" aria-expanded="false" aria-controls="collapseExample">Open Image Settings</button>
 				<div class="collapse" id="imagePreview">
 					<div class="card px-3 py-2 my-3">
 						<div class="d-flex justify-content-start" style="overflow-x:auto;">
@@ -82,15 +104,15 @@
 								<p class="text-center mb-0">Uploaded Image</p> <img src="./assets/img/no-image-selected.jpg" id="uploadedImage"> </div>
 							<div class="items ml-3">
 								<p class="text-center mb-0">Bordered Canvas</p>
-								<div id="canvas1Preview"></div>
+								<canvas id="canvas1" >Your browser doesn't support canvas.</canvas>
 							</div>
 						</div>
 						<p class="mb-0 py-2">If full image doesn't show then scroll it left-right.</p>
 					</div>
 				</div>
-				<button class="btn btn-primary mt-2" type="button" data-toggle="collapse" data-target="#imageSettings" aria-expanded="false" aria-controls="collapseExample"> Image Settings</button>
+				
 				<div class="collapse" id="imageSettings">
-					<div class="card px-3 py-2 my-3 bg-dark border-light">
+					<div class="card px-3 py-2 mt-3 bg-dark border-light">
 						<label for="numberOfImageRow" class="text-light">Number of image row</label>
 						<select class="custom-select my-1 mr-sm-2" id="numberOfImageRow">
 							<option value="1">One Row</option>
@@ -117,12 +139,15 @@
 						</select>
 					</div>
 				</div>
+				
 				<p id="fileInfo" class="sr-only"></p>
-				<div class="card p-2 my-3 bg-dark border-light">
-					<div id="outputImageBox"></div>
+				<div class="card px-2 pb-2 my-4 bg-dark border-light">
+					<div><a class="btn btn-primary my-2" id="download-link" download="" >Download Image</a>
+					<canvas id="outputCanvas" >Your browser doesn't support canvas.</canvas>
 				</div>
 			</div>
 		</div>
+		
 	</main>
 	<footer class="bg-black py-3 text-muted text-center">
 		<p class="m-0">
@@ -137,27 +162,31 @@
 		var selectImage = document.querySelector("#selectImage");
 		var fileInfo = document.querySelector("#fileInfo");
 		var uploadedImage = document.getElementById("uploadedImage");
+		var outputCanvas = document.getElementById("outputCanvas");
 		var originalImageWidth, originalImageHeight;
 		var isFileLoaded = false;
 		var mimeType;
 		selectImage.addEventListener("change", (event) => {
 			console.time('FileOpen');
-			var files = event.target.files;
+			let files = event.target.files;
 			if(files && files.length > 0) {
 				isFileLoaded = true;
-				var file = files[0];
+				let file = files[0];
 				console.log(file)
-					// show file details
+				// leader start section
+				console.time("Process Time")
+				
+				// show file details
 				fileInfo.innerHTML = "File: " + file.name;
 				//fileSize.html("Size: " + ((file.size / 1024).toFixed(2)) + "KB;&nbsp&nbsp");
 				// file reader for data url section
-				var fileReaderForDataURL = new FileReader();
+				let fileReaderForDataURL = new FileReader();
 				fileReaderForDataURL.onloadend = function(e) {
 					uploadedImage.src = e.target.result;
 					// open all section on image onload
-					$("#mainCollapse").collapse('show');
+					$("#mainCollapseContent").collapse('show');
 					// find image dimensions 
-					var imageForDimenstion = new Image();
+					let imageForDimenstion = new Image();
 					imageForDimenstion.src = e.target.result;
 					imageForDimenstion.onload = function() {
 						originalImageHeight = this.naturalHeight || this.height;
@@ -171,21 +200,22 @@
 				};
 				fileReaderForDataURL.readAsDataURL(file);
 				// file reader for array buffer section
-				var fileReaderForArrayBuffer = new FileReader();
+				let fileReaderForArrayBuffer = new FileReader();
 				fileReaderForArrayBuffer.onloadend = function(evt) {
 					if(evt.target.readyState === FileReader.DONE) {
-						var uInt8Array = new Uint8Array(evt.target.result);
+						let uInt8Array = new Uint8Array(evt.target.result);
 						let bytes = [];
 						uInt8Array.forEach((byte) => {
 							bytes.push(byte.toString(16))
 						});
-						var hex = bytes.join('').toUpperCase();
+						let hex = bytes.join('').toUpperCase();
 						mimeType = checkMimeType(hex);
 					}
 					console.timeEnd('FileOpen');
+					console.time("Before loop")
 					//loadCanvas();
 				};
-				var BLOB = file.slice(0, 4);
+				let BLOB = file.slice(0, 4);
 				fileReaderForArrayBuffer.readAsArrayBuffer(BLOB)
 			}
 		});
@@ -241,55 +271,86 @@
 		})
 
 		function loadCanvas() {
-			var numberOfImageRow = numOfRow.value;
-			var numberOfImageColumn = numOfColumn.value;
-			var canvas1 = document.createElement("canvas"); //document.getElementById("canvas1");
-			var imageWidth = 400;
+			let canvas1 = document.getElementById("canvas1") ; //document.createElement("canvas"); //document.getElementById("canvas1");
+			var imageWidth = 600;
 			var imageHeight = (imageWidth * originalImageHeight) / originalImageWidth;
 			var imageBorder = imageWidth / 100;
 			canvas1.width = imageWidth;
 			canvas1.height = imageHeight;
-			// step 1 (add border in image)
-			var ctx1 = canvas1.getContext("2d");
+			
+			// STEP 1 (add border in image)
+			let ctx1 = canvas1.getContext("2d");
 			// this is for image border color
 			ctx1.fillStyle = '#000';
 			ctx1.fillRect(0, 0, imageWidth, imageHeight);
 			// copying image
 			ctx1.drawImage(uploadedImage, imageBorder, imageBorder, imageWidth - imageBorder * 2, imageHeight - imageBorder * 2);
-			//show canvas1 preview
-			document.getElementById("canvas1Preview").innerHTML = '<img src="' + canvas1.toDataURL(mimeType) + '" alt="Bordered image." >';
-			// step 2 (arrange image for printing)
-			var A4Canvas = document.createElement("canvas"); //document.getElementById("A4Canvas");
-			var ctx2 = A4Canvas.getContext("2d");
+			
+			
+			// STEP 2 (arrange image for printing)
+			let ctx2 = outputCanvas.getContext("2d");
+			var A4pageRatio = 210/297;
+			let numberOfImageRow = numOfRow.value;
+			let numberOfImageColumn = numOfColumn.value;
 			// set gap between images
-			var imageMargin = imageWidth / 20;
-			var imageMarginX = imageMargin;
-			var imageMarginY = imageMargin;
+			let imageMargin = imageWidth / 20;
+			let imageMarginX = imageMargin;
+			let imageMarginY = imageMargin;
 			// whole image size will be ready for download
-			var canvasWidth = numberOfImageColumn * (imageWidth + imageMargin) + imageMargin;
-			var canvasHeight = canvasWidth * 297 / 210; // size ratio of A4 paper size
-			A4Canvas.width = canvasWidth;
-			A4Canvas.height = canvasHeight;
+			let canvasWidth = numberOfImageColumn * (imageWidth + imageMargin) + imageMargin;
+			let canvasHeight = canvasWidth / A4pageRatio; // * 297 / 210; // size ratio of A4 paper size
+			outputCanvas.width = canvasWidth;
+			outputCanvas.height = canvasHeight;
 			// because both canvas not perform once so add this in timeout method
 			setTimeout(() => {
 				// fill bg white
 				ctx2.fillStyle = '#fff';
-				ctx2.fillRect(0, 0, A4Canvas.width, A4Canvas.height);
+				ctx2.fillRect(0, 0, outputCanvas.width, outputCanvas.height);
+				console.timeEnd("Before loop")
+				console.time("Loop Time")
 				for(let r = 0; r < numberOfImageRow; r++) {
+					// for every row image column (x axis point) reset to initial point
 					imageMarginX = imageMargin;
 					for(let c = 0; c < numberOfImageColumn; c++) {
 						ctx2.drawImage(canvas1, imageMarginX, imageMarginY, imageWidth, imageHeight);
+						// change x axis according to number of image column
 						imageMarginX += imageWidth + imageMargin;
 						console.log("x : " + imageMarginX + ", y : " + imageMarginY)
 					}
-					//console.log(imageMarginY+"")
+					// change y axis according to number of image row
 					imageMarginY += imageHeight + imageMargin;
 				}
-				// add output canvas to image
-				var outputImgURL = A4Canvas.toDataURL(mimeType);
-				document.getElementById("outputImageBox").innerHTML = '<a class="btn btn-primary mb-2" href="' + outputImgURL + '" download >Download image</a><img width="100%" src="' + outputImgURL + '" alt="Arrange images for printing." >';
+				console.timeEnd("Loop Time")
+				console.log("loops ended.");
+				// image download link 
+				document.getElementById("download-link").setAttribute("href", outputCanvas.toDataURL(mimeType));
+				// leader end section
+				console.timeEnd("Process Time")
+				
 			}, 50)
 		}
+		
+		// change settings button text according to collapse events
+		let settingBtn = $("#settingBtn");
+		$("#imageSettings").on("show.bs.collapse",(e)=>{
+			settingBtn.html("Close Image Settings");
+		}).on("hide.bs.collapse",()=>{
+			settingBtn.html("Open Image Settings");
+		});
+		
+		// change preview button text according to collapse events
+		let previewBtn = $("#previewBtn");
+		$("#imagePreview").on("show.bs.collapse",(e)=>{
+			previewBtn.html("Close Image Preview");
+		}).on("hide.bs.collapse",()=>{
+			previewBtn.html("Open Image Preview");
+		});
+		// hide collpase on click outside
+		$(document).on("click",window,()=>{
+		$("#imagePreview, #imageSettings").collapse("hide");
+		
+		})
+		
 	})
 	</script>
 </body>
