@@ -11,6 +11,10 @@
 	<link href="./assets/vendor/bootstrap/4.5.2/bootstrap.min.css" rel="stylesheet">
 	<!-- cropper -->
 	<link href="./assets/vendor/cropper/cropperjs/1.5.7/cropper.css" rel="stylesheet">
+	<!-- One of the following themes -->
+	<link href="ssets/vendor/pickr/themes/classic.min.css" rel="stylesheet"/>
+	<link href="assets/vendor/pickr/themes/monolith.min.css" rel="stylesheet"/>
+	<link href="ssets/vendor/pickr/themes/nano.min.css" rel="stylesheet"/>
 	<!-- style-->
 	<link href="./assets/css/style.css" rel="stylesheet">
 	<!-- all vendors js file-->
@@ -18,6 +22,8 @@
 	<script src="./assets/vendor/jquery/3.5.1/jquery.min.js"></script>
 	<!-- bootstrap bundle -->
 	<script src="./assets/vendor/bootstrap/4.5.2/bootstrap.bundle.min.js"></script>
+	<!-- Modern or es5 bundle -->
+	<script src="assets/vendor/pickr/pickr.min.js"></script>
 	<!-- cropperjs  -->
 	<script src="./assets/vendor/cropper/cropperjs/1.5.7/cropper.min.js"></script>
 	<!-- jquery-cropper [wrapper for cropperjs to use with jquery] -->
@@ -72,6 +78,7 @@
 	box-shadow: none  !important;
 	}
 	#outputCanvas{width:100%;}
+	.upload-label img{max-width:300px; border-radius:5px;}
 	</style>
 </head>
 <!-- 
@@ -86,29 +93,41 @@ Web : https://skwebs.github.io
 		<div class="container my-4" style="overflow-x:hidden;">
 			<h1 class="border py-2 text-center text-primary rounded my-4">Image Sizing</h1>
 			
-			<div class="card px-3 py-2 my-3 bg-dark text-light border-light">
-				<div class="form-group pt-2">
-					<label for="selectImage">Select image</label>
-					<input class="form-control-file" id="selectImage" type="file" accept="image/*"> 
-				</div>
+			<div class="form-group text-center">
+				<label for="selectImage" class="upload-label rounded" >
+				<img src="assets/img/upload.jpg" >
+				</label>
+				<input class="form-control-file sr-only" id="selectImage" type="file" accept="image/*"> 
 			</div>
+			
+			
+			
+			
 			
 			
 			<div class="collapse" id="mainCollapseContent">
 				<button id="previewBtn" class="btn btn-info" type="button" data-toggle="collapse" data-target="#imagePreview" aria-expanded="false" aria-controls="collapseExample">Open Image Preview</button>
 				<button class="btn btn-primary" id="settingBtn" type="button" data-toggle="collapse" data-target="#imageSettings" aria-expanded="false" aria-controls="collapseExample">Open Image Settings</button>
+				
 				<div class="collapse" id="imagePreview">
-					<div class="card px-3 py-2 my-3">
-						<div class="d-flex justify-content-start" style="overflow-x:auto;">
+					<div class="card px-3 py-2 mt-3">
+						<div class="d-flex justify-content-start justify-content-md-center" style="overflow-x:auto;">
 							<div class="items">
-								<p class="text-center mb-0">Uploaded Image</p> <img src="./assets/img/no-image-selected.jpg" id="uploadedImage"> </div>
+								<p class="text-center mb-0">Uploaded Image</p> 
+								<img src="./assets/img/no-image-selected.jpg" id="uploadedImage"> 
+							</div>
 							<div class="items ml-3">
 								<p class="text-center mb-0">Bordered Canvas</p>
 								<canvas id="canvas1" >Your browser doesn't support canvas.</canvas>
 							</div>
 						</div>
-						<p class="mb-0 py-2">If full image doesn't show then scroll it left-right.</p>
+						<p class="mb-0 py-2 d-md-none">If full image doesn't show, scroll it left-right.</p>
 					</div>
+				</div>
+				
+				<div id="pickerWrap" class="d-flex justify-content-center mt-4 py-1" >
+					<div class="pickr-container" ></div>
+					<div class="color-picker" >Color Picker</div>
 				</div>
 				
 				<div class="collapse" id="imageSettings">
@@ -163,6 +182,7 @@ Web : https://skwebs.github.io
 		var fileInfo = document.querySelector("#fileInfo");
 		var uploadedImage = document.getElementById("uploadedImage");
 		var outputCanvas = document.getElementById("outputCanvas");
+		var setBgColor = "teal";
 		var originalImageWidth, originalImageHeight;
 		var isFileLoaded = false;
 		var mimeType;
@@ -273,6 +293,7 @@ Web : https://skwebs.github.io
 		function loadCanvas() {
 			let canvas1 = document.getElementById("canvas1") ; //document.createElement("canvas"); //document.getElementById("canvas1");
 			var imageWidth = 600;
+			var imgRenderRatio = 20/23;
 			var imageHeight = (imageWidth * originalImageHeight) / originalImageWidth;
 			var imageBorder = imageWidth / 100;
 			canvas1.width = imageWidth;
@@ -283,9 +304,20 @@ Web : https://skwebs.github.io
 			// this is for image border color
 			ctx1.fillStyle = '#000';
 			ctx1.fillRect(0, 0, imageWidth, imageHeight);
+			// transparent bg image background color
+			ctx1.fillStyle = setBgColor;
+			ctx1.fillRect( imageBorder, imageBorder, imageWidth - imageBorder * 2, imageHeight - imageBorder * 2);
 			// copying image
 			ctx1.drawImage(uploadedImage, imageBorder, imageBorder, imageWidth - imageBorder * 2, imageHeight - imageBorder * 2);
 			
+			/*
+			// required parameters
+			ctx.drawImage(sourceImage, drawX, drawY);
+			// can add draw width & draw height (optional)
+			ctx.drawImage(sourceImage, drawX, drawY, drawWidth, drawHeight);
+			// can add source X, source Y, source width & source height (optional)
+			ctx.drawImage(sourceImage, sourceX, sourceY, sourceWidth, sourceHeight, drawX, drawY, drawWidth, drawHeight);
+			*/
 			
 			// STEP 2 (arrange image for printing)
 			let ctx2 = outputCanvas.getContext("2d");
@@ -347,9 +379,81 @@ Web : https://skwebs.github.io
 		});
 		// hide collpase on click outside
 		$(document).on("click",window,()=>{
-		$("#imagePreview, #imageSettings").collapse("hide");
+		//$("#imagePreview, #imageSettings").collapse("hide");
 		
 		})
+		
+		
+		
+		
+		
+		// COLOR PICKER
+		const pickr = Pickr.create({
+		el: '.color-picker',
+		theme: 'monolith', //'classic', // or 'monolith', or 'nano'
+		default :"teal",
+		swatches: [
+		'rgba(244, 67, 54, 1)',
+		'rgba(233, 30, 99, 0.95)',
+		'rgba(156, 39, 176, 0.9)',
+		'rgba(103, 58, 183, 0.85)',
+		'rgba(63, 81, 181, 0.8)',
+		'rgba(33, 150, 243, 0.75)',
+		'rgba(3, 169, 244, 0.7)',
+		'rgba(0, 188, 212, 0.7)',
+		'rgba(0, 150, 136, 0.75)',
+		'rgba(76, 175, 80, 0.8)',
+		'rgba(139, 195, 74, 0.85)',
+		'rgba(205, 220, 57, 0.9)',
+		'rgba(255, 235, 59, 0.95)',
+		'rgba(255, 193, 7, 1)'
+		],
+		
+		components: {
+		
+		// Main components
+		preview: true,
+		opacity: true,
+		hue: true,
+		
+		// Input / output Options
+		interaction: {
+		hex: true, /*
+		rgba: true,
+		hsla: true,
+		hsva: true,
+		cmyk: true,*/
+		input: true,
+		//clear: true,
+		save: true
+		}
+		}
+		});
+		
+		
+		pickr/*.on('init', instance => {
+		console.log('init', instance);
+		}).on('hide', instance => {
+		console.log('hide', instance);
+		}).on('show', (color, instance) => {
+		console.log('show', color, instance);
+		}).on('save', (color, instance) => {
+		console.log('save', color, instance);
+		}).on('clear', instance => {
+		console.log('clear', instance);
+		})*/.on('change', (color, instance) => {
+		console.log('change', color, instance);
+		setBgColor = color.toHEXA().toString();
+		if(isFileLoaded){loadCanvas()}
+		document.querySelector("#pickerWrap").style.backgroundColor = setBgColor;
+		})/*.on('changestop', instance => {
+		console.log('changestop', instance);
+		}).on('cancel', instance => {
+		console.log('cancel', instance);
+		}).on('swatchselect', (color, instance) => {
+		console.log('swatchselect', color, instance);
+		});*/
+		
 		
 	})
 	</script>
