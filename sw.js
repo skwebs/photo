@@ -4,12 +4,12 @@ self.addEventListener('install', function(e) {
      return cache.addAll([
        './',
        './index.html',
-       './index.js',
-       './style.css',
-       './images/fox1.jpg',
-       './images/fox2.jpg',
-       './images/fox3.jpg',
-       './images/fox4.jpg'
+       './assets/vendor/bootstrap/4.5.2/bootstrap.min.css',
+       './assets/vendor/pickr/themes/monolith.min.css',
+       './assets/vendor/jquery/3.5.1/jquery.min.js',
+       './assets/vendor/bootstrap/4.5.2/bootstrap.bundle.min.js',
+       './assets/vendor/pickr/pickr.min.js'
+       
      ]);
    })
  );
