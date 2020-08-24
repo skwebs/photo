@@ -1,15 +1,20 @@
 {
   "background_color": "purple",
-  "description": "Shows random fox pictures. Hey, at least it isn't cats.",
+  "description": "Upload and create passport size photo album.",
   "display": "standalone",
   "icons": [
     {
-      "src": "icon/skwebs.png",
-      "sizes": "192x192",
+    "src": "assets/img/skwebs.png",
+    "sizes": "192x192",
+    "type": "image/png"
+    },
+    {
+      "src": "assets/img/skwebs512.png",
+      "sizes": "512x512",
       "type": "image/png"
     }
   ],
-  "name": "Satish Kumar Webs",
+  "name": "Create Passport Size Photo",
   "short_name": "SKWebs",
   "start_url": "./"
 }
