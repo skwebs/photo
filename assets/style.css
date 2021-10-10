@@ -1,0 +1,60 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+main {
+  /*
+By setting flex-grow to 1, the main content will take up 
+all of the remaining space on the page (the other elements have flex-grow: 0 and won't contest the free space).
+1 flex-grow, 0 flex-shrink, auto flex-basis 
+*/
+  flex: 1 0 auto !important;
+}
+
+footer {
+  /* We want the header to have a static height - it will always take up just as much space as it needs.  */
+  /* 0 flex-grow, 0 flex-shrink, auto flex-basis */
+  flex: 0 0 auto !important;
+}
+
+.items > * {
+  width: 200px !important;
+}
+
+.bg-black {
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.btn.active.focus,
+.btn.active:focus,
+.btn.focus,
+.btn.focus:active,
+.btn:active:focus,
+.btn:focus {
+  outline: 0 !important;
+  outline-offset: 0 !important;
+  background-image: none !important;
+  -webkit-box-shadow: none !important;
+  box-shadow: none !important;
+}
+
+#outputCanvas {
+  width: 100%;
+}
+
+.upload-label img {
+  max-width: 300px;
+  border-radius: 5px;
+}

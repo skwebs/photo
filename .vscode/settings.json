@@ -1,0 +1,15 @@
+{
+   "editor.bracketPairColorization.enabled": true,
+   "prettier.tabWidth": 2,
+   "prettier.arrowParens": "always",
+   "prettier.semi": true,
+   "editor.formatOnSave": true,
+   "editor.formatOnSaveMode": "file",
+   "editor.tabSize": 2,
+   "editor.mouseWheelZoom": true,
+   "editor.defaultFormatter": "esbenp.prettier-vscode",
+   "[javascript]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+   },
+   "files.autoSave": "afterDelay",
+}

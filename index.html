@@ -4,84 +4,23 @@
 <head>
 	<title>Create Photo for Printing.</title>
 	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=10 shrink-to-fit=no">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta http-equiv="x-ua-compatible" content="ie=edge">
 	<meta name="theme-color" content="#09407f">
-	<link rel="manifest" href="manifest.json">
+	<link rel="manifest" href="./manifest.json">
 	<!-- bootstrap -->
-	<link href="./assets/vendor/bootstrap/4.5.2/bootstrap.min.css" rel="stylesheet">
+	<link href="./assets/vendor/bootstrap/4.5.2/bootstrap.min.css?v1" rel="stylesheet">
 	<!-- cropper -->
-	<link href="./assets/vendor/cropper/cropperjs/1.5.7/cropper.css" rel="stylesheet">
+	<link href="./assets/vendor/cropper/cropperjs/1.5.7/cropper.css?v1" rel="stylesheet">
 	<!-- One of the following themes -->
-	<link href="ssets/vendor/pickr/themes/classic.min.css" rel="stylesheet"/>
-	<link href="assets/vendor/pickr/themes/monolith.min.css" rel="stylesheet"/>
-	<link href="ssets/vendor/pickr/themes/nano.min.css" rel="stylesheet"/>
+	<link href="./assets/vendor/pickr/1.8.2/themes/classic.min.css?v1" rel="stylesheet" />
+	<link href="./assets/vendor/pickr/1.8.2/themes/monolith.min.css?v1" rel="stylesheet" />
+	<link href="./assets/vendor/pickr/1.8.2/themes/nano.min.css?v1" rel="stylesheet" />
 	<!-- style-->
-	<link href="./assets/css/style.css" rel="stylesheet">
+	<link href="./assets/style.css?v1" rel="stylesheet">
 	<!-- all vendors js file-->
-	<!-- jQuery -->
-	<script src="./assets/vendor/jquery/3.5.1/jquery.min.js"></script>
-	<!-- bootstrap bundle -->
-	<script src="./assets/vendor/bootstrap/4.5.2/bootstrap.bundle.min.js"></script>
-	<!-- Modern or es5 bundle -->
-	<script src="assets/vendor/pickr/pickr.min.js"></script>
-	<!-- cropperjs  -->
-	<script src="./assets/vendor/cropper/cropperjs/1.5.7/cropper.min.js"></script>
-	<!-- jquery-cropper [wrapper for cropperjs to use with jquery] -->
-	<script src="./assets/vendor/cropper/jquery-cropper/1.0.1/jquery-cropper.min.js"></script>
-	<script src="pwa.js"></script>
-	<style type="text/css">
-	* {
-		margin: 0;
-		padding: 0;
-		box-sizing: border-box;
-	}
-	
-	html {
-		height: 100%;
-	}
-	
-	body {
-		display: flex;
-		flex-direction: column;
-		height: 100%;
-	}
-	
-	main {
-		/* By setting flex-grow to 1, the main content will take up 
-	all of the remaining space on the page (the other elements have flex-grow: 0 and won't contest the free space). */
-		/* 1 flex-grow, 0 flex-shrink, auto flex-basis */
-		flex: 1 0 auto !important;
-	}
-	
-	footer {
-		/* We want the header to have a static height - it will always take up just as much space as it needs.  */
-		/* 0 flex-grow, 0 flex-shrink, auto flex-basis */
-		flex: 0 0 auto !important;
-	}
-	
-	.items > * {
-		width: 200px !important;
-	}
-	
-	.bg-black {
-		background: rgba(0, 0, 0, .4);
-	}
-	.btn.active.focus,
-	.btn.active:focus,
-	.btn.focus,
-	.btn.focus:active,
-	.btn:active:focus,
-	.btn:focus {
-	outline: 0 !important;
-	outline-offset: 0  !important;
-	background-image: none  !important;
-	-webkit-box-shadow: none !important;
-	box-shadow: none  !important;
-	}
-	#outputCanvas{width:100%;}
-	.upload-label img{max-width:300px; border-radius:5px;}
-	</style>
+
+	<link rel="stylesheet" href="./assets/style.css?v1">
 </head>
 <!-- 
 
@@ -90,375 +29,101 @@ Contact : skwebserv@gmail.com
 Web : https://skwebs.github.io
 
 -->
+
 <body class="bg-dark">
 	<main>
 		<div class="container my-4" style="overflow-x:hidden;">
 			<h1 class="border py-2 text-center text-primary rounded my-4">Image Sizing</h1>
-			
+
 			<div class="form-group text-center">
-				<label for="selectImage" class="upload-label rounded" >
-				<img src="assets/img/upload.jpg" >
+				<label for="selectImage" class="upload-label rounded">
+					<img src="./assets/img/upload.jpg">
 				</label>
-				<input class="form-control-file sr-only" id="selectImage" type="file" accept="image/*"> 
+				<input class="form-control-file sr-only" id="selectImage" type="file" accept="image/*">
 			</div>
-			
-			
-			
-			
-			
-			
+
 			<div class="collapse" id="mainCollapseContent">
-				<button id="previewBtn" class="btn btn-info" type="button" data-toggle="collapse" data-target="#imagePreview" aria-expanded="false" aria-controls="collapseExample">Open Image Preview</button>
-				<button class="btn btn-primary" id="settingBtn" type="button" data-toggle="collapse" data-target="#imageSettings" aria-expanded="false" aria-controls="collapseExample">Open Image Settings</button>
-				
-				<div class="collapse" id="imagePreview">
-					<div class="card px-3 py-2 mt-3">
-						<div class="d-flex justify-content-start justify-content-md-center" style="overflow-x:auto;">
-							<div class="items">
-								<p class="text-center mb-0">Uploaded Image</p> 
-								<img src="./assets/img/no-image-selected.jpg" id="uploadedImage"> 
-							</div>
-							<div class="items ml-3">
-								<p class="text-center mb-0">Bordered Canvas</p>
-								<canvas id="canvas1" >Your browser doesn't support canvas.</canvas>
+
+
+
+
+				<div class="row">
+					<div class="col-md-6">
+						<button id="previewBtn" class="btn btn-info" type="button" data-toggle="collapse"
+							data-target="#imagePreview" aria-expanded="false" aria-controls="collapseExample">Open Image
+							Preview</button>
+						<button class="btn btn-primary" id="settingBtn" type="button" data-toggle="collapse"
+							data-target="#imageSettings" aria-expanded="false" aria-controls="collapseExample">Open Image
+							Settings</button>
+					</div>
+					<div class="col-md-6">
+						<div id="pickerWrap" class="d-flex justify-content-center mt-4 py-1">
+							<div class="pickr-container"></div>
+							<div class="color-picker">Color Picker</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-md-7">
+						<div class="collapse" id="imagePreview">
+							<div class="card px-3 py-2 mt-3">
+								<div class="d-flex justify-content-start justify-content-md-center" style="overflow-x:auto;">
+									<div class="items">
+										<p class="text-center mb-0">Uploaded Image</p>
+										<img src="./assets/img/no-image-selected.jpg" id="uploadedImage">
+									</div>
+									<div class="items ml-3">
+										<p class="text-center mb-0">Bordered Canvas</p>
+										<canvas id="canvas1">Your browser doesn't support canvas.</canvas>
+									</div>
+								</div>
+								<p class="mb-0 py-2 d-md-none">If full image doesn't show, scroll it left-right.</p>
 							</div>
 						</div>
-						<p class="mb-0 py-2 d-md-none">If full image doesn't show, scroll it left-right.</p>
+					</div>
+					<div class="col-md-5">
+						<div class="collapse" id="imageSettings">
+							<div class="card px-3 py-2 mt-3 bg-dark border-light">
+								<label for="numberOfImageRow" class="text-light">Number of image row</label>
+								<select class="custom-select my-1 mr-sm-2" id="numberOfImageRow">
+								</select>
+								<label for="numberOfImageRow" class="text-light">Number of image column</label>
+								<select class="custom-select my-1 mr-sm-2" id="numberOfImageColumn">
+								</select>
+							</div>
+						</div>
 					</div>
 				</div>
-				
-				<div id="pickerWrap" class="d-flex justify-content-center mt-4 py-1" >
-					<div class="pickr-container" ></div>
-					<div class="color-picker" >Color Picker</div>
-				</div>
-				
-				<div class="collapse" id="imageSettings">
-					<div class="card px-3 py-2 mt-3 bg-dark border-light">
-						<label for="numberOfImageRow" class="text-light">Number of image row</label>
-						<select class="custom-select my-1 mr-sm-2" id="numberOfImageRow">
-							<option selected value="1">One Row</option>
-							<option value="2">Two Rows</option>
-							<option value="3">Three Rows</option>
-							<option value="4">Four Rows</option>
-							<option value="5">Five Rows</option>
-							<option value="6">Six Rows</option>
-							<option value="7">Seven Rows</option>
-							<option value="8">Eight Rows</option>
-							<option value="9">Nine Rows</option>
-							<option value="10">Ten Rows</option>
-						</select>
-						<label for="numberOfImageRow" class="text-light">Number of image column</label>
-						<select class="custom-select my-1 mr-sm-2" id="numberOfImageColumn">
-							<option value="1">One Column</option>
-							<option value="2">Two Columns</option>
-							<option value="3">Three Columns</option>
-							<option value="4">Four Columns</option>
-							<option value="5">Five Columns</option>
-							<option selected="selected" value="6">Six Columns</option>
-							<option value="7">Seven Columns</option>
-							<option value="8">Eight Columns</option>
-						</select>
-					</div>
-				</div>
-				
+
 				<p id="fileInfo" class="sr-only"></p>
 				<div class="card px-2 pb-2 my-4 bg-dark border-light">
-					<div><a class="btn btn-primary my-2" id="download-link" download="" >Download Image</a>
-					<canvas id="outputCanvas" >Your browser doesn't support canvas.</canvas>
+					<div><a class="btn btn-primary my-2" id="download-link" download="">Download Image</a>
+						<canvas id="outputCanvas">Your browser doesn't support canvas.</canvas>
+					</div>
 				</div>
 			</div>
-		</div>
-		
+
 	</main>
 	<footer class="bg-black py-3 text-muted text-center">
 		<p class="m-0">
-			&copy<script>document.write((new Date).getFullYear());</script>
-			 Developed by <a class="h6" href="https://skwebs.github.io/">SKWebs</a>
+			&copy
+			<script>document.write((new Date).getFullYear());</script>
+			Developed by <a class="h6" href="https://skwebs.github.io/">SKWebs</a>
 		</p>
 	</footer>
-	<script type="text/javascript">
-	"use strict";
-	window.addEventListener('DOMContentLoaded', function() {
-		//	 IMAGE LOAD SECTION ================================
-		var selectImage = document.querySelector("#selectImage");
-		var fileInfo = document.querySelector("#fileInfo");
-		var uploadedImage = document.getElementById("uploadedImage");
-		var outputCanvas = document.getElementById("outputCanvas");
-		var setBgColor = "teal";
-		var originalImageWidth, originalImageHeight;
-		var isFileLoaded = false;
-		var mimeType;
-		selectImage.addEventListener("change", (event) => {
-			console.time('FileOpen');
-			let files = event.target.files;
-			if(files && files.length > 0) {
-				isFileLoaded = true;
-				let file = files[0];
-				console.log(file)
-				// leader start section
-				console.time("Process Time")
-				
-				// show file details
-				fileInfo.innerHTML = "File: " + file.name;
-				//fileSize.html("Size: " + ((file.size / 1024).toFixed(2)) + "KB;&nbsp&nbsp");
-				// file reader for data url section
-				let fileReaderForDataURL = new FileReader();
-				fileReaderForDataURL.onloadend = function(e) {
-					uploadedImage.src = e.target.result;
-					// open all section on image onload
-					$("#mainCollapseContent").collapse('show');
-					// find image dimensions 
-					let imageForDimenstion = new Image();
-					imageForDimenstion.src = e.target.result;
-					imageForDimenstion.onload = function() {
-						originalImageHeight = this.naturalHeight || this.height;
-						originalImageWidth = this.naturalWidth || this.width;
-						loadCanvas();
-						console.log("width :" + originalImageWidth + ", height : " + originalImageHeight)
-						console.log("ratio : " + imageRatio(originalImageWidth, originalImageHeight));
-					};
-					// console image url data
-					console.log(e.target.result)
-				};
-				fileReaderForDataURL.readAsDataURL(file);
-				// file reader for array buffer section
-				let fileReaderForArrayBuffer = new FileReader();
-				fileReaderForArrayBuffer.onloadend = function(evt) {
-					if(evt.target.readyState === FileReader.DONE) {
-						let uInt8Array = new Uint8Array(evt.target.result);
-						let bytes = [];
-						uInt8Array.forEach((byte) => {
-							bytes.push(byte.toString(16))
-						});
-						let hex = bytes.join('').toUpperCase();
-						mimeType = checkMimeType(hex);
-					}
-					console.timeEnd('FileOpen');
-					console.time("Before loop")
-					//loadCanvas();
-				};
-				let BLOB = file.slice(0, 4);
-				fileReaderForArrayBuffer.readAsArrayBuffer(BLOB)
-			}
-		});
-		//	IMAGE MIME SECTION ==================================
-		var checkMimeType = (signature) => {
-			switch(signature) {
-				case '89504E47':
-					return 'image/png';
-				case '47494638':
-					return 'image/gif';
-				case '25504446':
-					return 'application/pdf';
-				case 'FFD8FFDB':
-				case 'FFD8FFE0':
-				case 'FFD8FFE1':
-					return 'image/jpeg';
-				case '504B0304':
-					return 'application/zip';
-				default:
-					return 'Unknown filetype'
-			}
-		};
-
-		function imageRatio(w, h) {
-			let gcd = hcf(w, h);
-			let wr = w / gcd;
-			let hr = h / gcd;
-			let ratioString = wr + "/" + hr;
-			return ratioString;
-		}
-
-		function hcf(x, y) {
-			x = Math.abs(x);
-			y = Math.abs(y);
-			while(y) {
-				let t = y;
-				y = x % y;
-				x = t;
-			}
-			return x;
-		}
-		var numOfRow = document.getElementById("numberOfImageRow");
-		numOfRow.addEventListener("change", () => {
-			if(isFileLoaded) {
-				loadCanvas()
-			};
-		})
-		var numOfColumn = document.getElementById("numberOfImageColumn");
-		numOfColumn.addEventListener("change", () => {
-			if(isFileLoaded) {
-				loadCanvas()
-			};
-		})
-
-		function loadCanvas() {
-			let canvas1 = document.getElementById("canvas1") ; //document.createElement("canvas"); //document.getElementById("canvas1");
-			var imageWidth = 600;
-			var imgRenderRatio = 20/23;
-			var imageHeight = (imageWidth * originalImageHeight) / originalImageWidth;
-			var imageBorder = imageWidth / 100;
-			canvas1.width = imageWidth;
-			canvas1.height = imageHeight;
-			
-			// STEP 1 (add border in image)
-			let ctx1 = canvas1.getContext("2d");
-			// this is for image border color
-			ctx1.fillStyle = '#000';
-			ctx1.fillRect(0, 0, imageWidth, imageHeight);
-			// transparent bg image background color
-			ctx1.fillStyle = setBgColor;
-			ctx1.fillRect( imageBorder, imageBorder, imageWidth - imageBorder * 2, imageHeight - imageBorder * 2);
-			// copying image
-			ctx1.drawImage(uploadedImage, imageBorder, imageBorder, imageWidth - imageBorder * 2, imageHeight - imageBorder * 2);
-			
-			/*
-			// required parameters
-			ctx.drawImage(sourceImage, drawX, drawY);
-			// can add draw width & draw height (optional)
-			ctx.drawImage(sourceImage, drawX, drawY, drawWidth, drawHeight);
-			// can add source X, source Y, source width & source height (optional)
-			ctx.drawImage(sourceImage, sourceX, sourceY, sourceWidth, sourceHeight, drawX, drawY, drawWidth, drawHeight);
-			*/
-			
-			// STEP 2 (arrange image for printing)
-			let ctx2 = outputCanvas.getContext("2d");
-			var A4pageRatio = 210/297;
-			let numberOfImageRow = numOfRow.value;
-			let numberOfImageColumn = numOfColumn.value;
-			// set gap between images
-			let imageMargin = imageWidth / 20;
-			let imageMarginX = imageMargin;
-			let imageMarginY = imageMargin;
-			// whole image size will be ready for download
-			let canvasWidth = numberOfImageColumn * (imageWidth + imageMargin) + imageMargin;
-			let canvasHeight = canvasWidth / A4pageRatio; // * 297 / 210; // size ratio of A4 paper size
-			outputCanvas.width = canvasWidth;
-			outputCanvas.height = canvasHeight;
-			// because both canvas not perform once so add this in timeout method
-			setTimeout(() => {
-				// fill bg white
-				ctx2.fillStyle = '#fff';
-				ctx2.fillRect(0, 0, outputCanvas.width, outputCanvas.height);
-				console.timeEnd("Before loop")
-				console.time("Loop Time")
-				for(let r = 0; r < numberOfImageRow; r++) {
-					// for every row image column (x axis point) reset to initial point
-					imageMarginX = imageMargin;
-					for(let c = 0; c < numberOfImageColumn; c++) {
-						ctx2.drawImage(canvas1, imageMarginX, imageMarginY, imageWidth, imageHeight);
-						// change x axis according to number of image column
-						imageMarginX += imageWidth + imageMargin;
-						console.log("x : " + imageMarginX + ", y : " + imageMarginY)
-					}
-					// change y axis according to number of image row
-					imageMarginY += imageHeight + imageMargin;
-				}
-				console.timeEnd("Loop Time")
-				console.log("loops ended.");
-				// image download link 
-				document.getElementById("download-link").setAttribute("href", outputCanvas.toDataURL(mimeType));
-				// leader end section
-				console.timeEnd("Process Time")
-				
-			}, 50)
-		}
-		
-		// change settings button text according to collapse events
-		let settingBtn = $("#settingBtn");
-		$("#imageSettings").on("show.bs.collapse",(e)=>{
-			settingBtn.html("Close Image Settings");
-		}).on("hide.bs.collapse",()=>{
-			settingBtn.html("Open Image Settings");
-		});
-		
-		// change preview button text according to collapse events
-		let previewBtn = $("#previewBtn");
-		$("#imagePreview").on("show.bs.collapse",(e)=>{
-			previewBtn.html("Close Image Preview");
-		}).on("hide.bs.collapse",()=>{
-			previewBtn.html("Open Image Preview");
-		});
-		// hide collpase on click outside
-		$(document).on("click",window,()=>{
-		//$("#imagePreview, #imageSettings").collapse("hide");
-		
-		})
-		
-		
-		
-		
-		
-		// COLOR PICKER
-		const pickr = Pickr.create({
-		el: '.color-picker',
-		theme: 'monolith', //'classic', // or 'monolith', or 'nano'
-		default :"teal",
-		swatches: [
-		'rgba(244, 67, 54, 1)',
-		'rgba(233, 30, 99, 0.95)',
-		'rgba(156, 39, 176, 0.9)',
-		'rgba(103, 58, 183, 0.85)',
-		'rgba(63, 81, 181, 0.8)',
-		'rgba(33, 150, 243, 0.75)',
-		'rgba(3, 169, 244, 0.7)',
-		'rgba(0, 188, 212, 0.7)',
-		'rgba(0, 150, 136, 0.75)',
-		'rgba(76, 175, 80, 0.8)',
-		'rgba(139, 195, 74, 0.85)',
-		'rgba(205, 220, 57, 0.9)',
-		'rgba(255, 235, 59, 0.95)',
-		'rgba(255, 193, 7, 1)'
-		],
-		
-		components: {
-		
-		// Main components
-		preview: true,
-		opacity: true,
-		hue: true,
-		
-		// Input / output Options
-		interaction: {
-		hex: true, /*
-		rgba: true,
-		hsla: true,
-		hsva: true,
-		cmyk: true,*/
-		input: true,
-		//clear: true,
-		save: true
-		}
-		}
-		});
-		
-		
-		pickr/*.on('init', instance => {
-		console.log('init', instance);
-		}).on('hide', instance => {
-		console.log('hide', instance);
-		}).on('show', (color, instance) => {
-		console.log('show', color, instance);
-		}).on('save', (color, instance) => {
-		console.log('save', color, instance);
-		}).on('clear', instance => {
-		console.log('clear', instance);
-		})*/.on('change', (color, instance) => {
-		console.log('change', color, instance);
-		setBgColor = color.toHEXA().toString();
-		if(isFileLoaded){loadCanvas()}
-		document.querySelector("#pickerWrap").style.backgroundColor = setBgColor;
-		})/*.on('changestop', instance => {
-		console.log('changestop', instance);
-		}).on('cancel', instance => {
-		console.log('cancel', instance);
-		}).on('swatchselect', (color, instance) => {
-		console.log('swatchselect', color, instance);
-		});*/
-		
-		
-	})
-	</script>
+	<!-- jQuery -->
+	<script src="./assets/vendor/jquery/3.5.1/jquery.min.js?v1"></script>
+	<!-- bootstrap bundle -->
+	<script src="./assets/vendor/bootstrap/4.5.2/bootstrap.bundle.min.js?v1"></script>
+	<!-- Modern or es5 bundle -->
+	<script src="./assets/vendor/pickr/1.8.2/pickr.min.js?v1"></script>
+	<!-- cropperjs  -->
+	<script src="./assets/vendor/cropper/cropperjs/1.5.7/cropper.min.js?v1"></script>
+	<!-- jquery-cropper [wrapper for cropperjs to use with jquery] -->
+	<script src="./assets/vendor/cropper/jquery-cropper/1.0.1/jquery-cropper.min.js?v1"></script>
+	<script src="./pwa.js?v1"></script>
+	<script src="./assets/script.js?v1"></script>
 </body>
 
 </html>
