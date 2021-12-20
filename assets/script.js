@@ -16,6 +16,7 @@ window.addEventListener("DOMContentLoaded", function () {
   var mimeType;
 
   var numTxt = [
+  	"",
     "One",
     "Two",
     "Three",
@@ -142,6 +143,7 @@ window.addEventListener("DOMContentLoaded", function () {
   var cn = "";
   for (let i = 1; i < 15; i++) {
     cn += '<option value="' + i + '">' + numTxt[i] + " Columns</option>";
+    if(i==6){cn += '<option selected value="' + i + '">' + numTxt[i] + " Columns</option>";}
   }
   numOfColumn.innerHTML = cn;
 
